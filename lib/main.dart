@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'PokeAPI App',
+      title: 'PokéAPI App',
       home: PokemonSearchPage(),
     );
   }
@@ -37,14 +37,23 @@ class _PokemonSearchPageState extends State<PokemonSearchPage> {
   }
 
   void _searchPokemon() async {
+    final query = _controller.text.trim();
+
+    if (query.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter a Pokémon name or ID.';
+        _pokemonData = null;
+      });
+      return;
+    }
+
     setState(() {
       _errorMessage = null;
       _pokemonData = null;
     });
 
     try {
-      final data =
-          await _pokemonService.getPokemon(_controller.text.toLowerCase());
+      final data = await _pokemonService.getPokemon(query.toLowerCase());
       setState(() {
         _pokemonData = data;
       });
